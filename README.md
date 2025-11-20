@@ -90,4 +90,19 @@
      * значение recordsize;
      * какое сжатие используется;
      * какая контрольная сумма используется.
-
+ 
+ ### Копируем файлы в файловые системы zfs:
+  ```bash
+      zfs get compressratio
+  ```
+  ```
+      root@ubuntu:~# zfs get compressratio
+      NAME     PROPERTY       VALUE  SOURCE
+      test1    compressratio  11.78x  -
+      test1/1  compressratio  12.09x  -
+      test2    compressratio  2.95x  -
+      test2/1  compressratio  2.96x  -
+      test3    compressratio  5.60x  -
+      test3/1  compressratio  5.65x  -
+      test4    compressratio  8.38x  -
+  ```
