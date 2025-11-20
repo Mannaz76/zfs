@@ -176,12 +176,9 @@
   ```
 ### Поиск зашфированного сообщения в файле secret_message
   ```bash
-      find /otus/test -name "secret_message"
-      
+      find /otus/test -name "secret_message" | xargs cat
   ```
   ```
-    root@ubuntu:/home/mannaz# zfs get checksum otus
-    NAME  PROPERTY  VALUE      SOURCE
-    otus  checksum  sha256     local
-
+      root@ubuntu:/home/mannaz# find /otus/test -name "secret_message" | xargs cat
+      https://otus.ru/lessons/linux-hl/
   ```
