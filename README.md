@@ -91,18 +91,97 @@
      * какое сжатие используется;
      * какая контрольная сумма используется.
  
- ### Копируем файлы в файловые системы zfs:
+ ### Скачиваем и импортируем pool в нашу систему:
   ```bash
-      zfs get compressratio
+      wget -O archive.tar.gz --no-check-certificate 'https://drive.usercontent.google.com/download?id=1MvrcEp-WgAQe57aDEzxSRalPAwbNN1Bb&export=download'
+      tar -xzvf archive.tar.gz
+      zpool import -d zpoolexport/ otus
+      zpool status otus
   ```
   ```
-      root@ubuntu:~# zfs get compressratio
-      NAME     PROPERTY       VALUE  SOURCE
-      test1    compressratio  11.78x  -
-      test1/1  compressratio  12.09x  -
-      test2    compressratio  2.95x  -
-      test2/1  compressratio  2.96x  -
-      test3    compressratio  5.60x  -
-      test3/1  compressratio  5.65x  -
-      test4    compressratio  8.38x  -
+      root@ubuntu:/home/mannaz# zpool status otus
+        pool: otus
+       state: ONLINE
+      status: Some supported and requested features are not enabled on the pool.
+              The pool can still be used, but some features are unavailable.
+      action: Enable all features using 'zpool upgrade'. Once this is done,
+              the pool may no longer be accessible by software that does not support
+              the features. See zpool-features(7) for details.
+      config:
+      
+              NAME                                STATE     READ WRITE CKSUM
+              otus                                ONLINE       0     0     0
+                mirror-0                          ONLINE       0     0     0
+                  /home/mannaz/zpoolexport/filea  ONLINE       0     0     0
+                  /home/mannaz/zpoolexport/fileb  ONLINE       0     0     0
+      
+      errors: No known data errors
+
+  ```
+#### Выводим размера хранилища:
+  ```bash
+      zfs get available otus
+  ```
+  ```
+      root@ubuntu:/home/mannaz# zfs get available otus
+      NAME  PROPERTY   VALUE  SOURCE
+      otus  available  350M   -
+  ```
+#### Выводим тип хранилица:
+  ```bash
+      zfs get readonly otus
+  ```
+  ```
+      root@ubuntu:/home/mannaz# zfs get readonly otus
+      NAME  PROPERTY  VALUE   SOURCE
+      otus  readonly  off     default
+  ```
+#### Выводим значение recordsize:
+  ```bash
+      zfs get recordsize otus
+  ```
+  ```
+      root@ubuntu:/home/mannaz# zfs get recordsize otus
+      NAME  PROPERTY    VALUE    SOURCE
+      otus  recordsize  128K     local
+  ```
+#### Выводим тип сжатия:
+  ```bash
+      zfs get compression otus
+  ```
+  ```
+      root@ubuntu:/home/mannaz# zfs get compression otus
+      NAME  PROPERTY     VALUE           SOURCE
+      otus  compression  zle             local
+  ```
+#### Выводим тип контрольных сумм:
+  ```bash
+      zfs get checksum otus
+  ```
+  ```
+    root@ubuntu:/home/mannaz# zfs get checksum otus
+    NAME  PROPERTY  VALUE      SOURCE
+    otus  checksum  sha256     local
+
+  ```
+## Работа со snapshot
+1) Cкопировать файл из удаленной директории;
+2) Восстановить файл локально. zfs receive;
+3) Найти зашифрованное сообщение в файле secret_message.
+
+### Cкачиваем файл snapshot-a и восстанавливаем данные с него:
+  ```bash
+      wget -O otus_task2.file --no-check-certificate https://drive.usercontent.google.com/download?id=1wgxjih8YZ-cqLqaZVa0lA3h3Y029c3oI&export=download
+      zfs receive otus/test@now < otus_task2.file
+  ```
+### Поиск зашфированного сообщения в файле secret_message
+  ```bash
+      find /otus/test -name "secret_message"
+      
+  ```
+  ```
+    root@ubuntu:/home/mannaz# zfs get checksum otus
+    NAME  PROPERTY  VALUE      SOURCE
+    otus  checksum  sha256     local
+
   ```
